@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
     Box,
     Typography,
@@ -48,6 +48,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import {LeafButton, TanButton} from "../styles/useStyles.ts";
+import { loadFishList } from './FishList';
 
 // NOTE: Import actual icons, not emojis.
 const FishIcon = () => <span role="img" aria-label="fish">🐟</span>;
@@ -72,23 +73,23 @@ const CritterClockShowcase = () => {
     const [selectedSeason, setSelectedSeason] = useState('spring');
     const [valueRange, setValueRange] = useState([0, 15000]);
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
 
-    const handleAlignmentChange = (event: React.MouseEvent<HTMLElement>, newAlignment: string | null) => {
+    const handleAlignmentChange = (_event: React.MouseEvent<HTMLElement>, newAlignment: string | null) => {
         if (newAlignment !== null) {
             setAlignment(newAlignment);
         }
     };
 
-    const handleSeasonChange = (event: React.MouseEvent<HTMLElement>, newSeason: string | null) => {
+    const handleSeasonChange = (_event: React.MouseEvent<HTMLElement>, newSeason: string | null) => {
         if (newSeason !== null) {
             setSelectedSeason(newSeason);
         }
     };
 
-    const handleValueRangeChange = (event: Event, newValue: number | number[]) => {
+    const handleValueRangeChange = (_event: Event, newValue: number | number[]) => {
         setValueRange(newValue as number[]);
     };
 
@@ -97,6 +98,20 @@ const CritterClockShowcase = () => {
         setTimeout(() => {
             setLoading(false);
         }, 1500);
+    };
+
+
+    const ButtonComponent = () => {
+        const handleButtonClick = async () => {
+            const fishData = await loadFishList();
+            console.log("Fetched Fish Data:", fishData);
+        };
+
+        return (
+            <Button variant="contained" color="primary" onClick={handleButtonClick}>
+                Data Test
+            </Button>
+        );
     };
 
     // Sample fish data
@@ -155,6 +170,7 @@ const CritterClockShowcase = () => {
                 <Typography variant="body1">
                     Find the perfect time to catch fish and bugs in Animal Crossing: New Horizons!
                 </Typography>
+                <ButtonComponent />
             </Paper>
 
             {/* Header with main title */}
