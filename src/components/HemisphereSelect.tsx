@@ -4,6 +4,7 @@ import {Box, FormControl, Grid, InputLabel, MenuItem, Select} from "@mui/materia
 const HemisphereSelect = () => {
     const [hemisphere, setHemisphere] = useState('north');
 
+
     return(
         <Grid size={{xs: 12, sm:6, md:3}}>
             <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
@@ -16,12 +17,14 @@ const HemisphereSelect = () => {
                 >
                     <MenuItem value="north">
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box sx={{ ml: 1 }}>Northern</Box>
-                    </Box></MenuItem>
+                            <Box sx={{ ml: 1 }}>Northern</Box>
+                        </Box>
+                    </MenuItem>
                     <MenuItem value="south">
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box sx={{ ml: 1 }}>Southern</Box>
-                    </Box></MenuItem>
+                            <Box sx={{ ml: 1 }}>Southern</Box>
+                        </Box>
+                    </MenuItem>
                 </Select>
             </FormControl>
         </Grid>
