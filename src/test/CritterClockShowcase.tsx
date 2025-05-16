@@ -48,7 +48,6 @@ import {
     CircularProgress
 } from '@mui/material';
 import {LeafButton, TanButton} from "../styles/useStyles.ts";
-import { loadFishList } from './FishList';
 
 // NOTE: Import actual icons, not emojis.
 const FishIcon = () => <span role="img" aria-label="fish">🐟</span>;
@@ -65,13 +64,14 @@ const WinterIcon = () => <span role="img" aria-label="winter">❄️</span>;
 
 const CritterClockShowcase = () => {
     const [selectedCritter, setSelectedCritter] = useState('fish');
-    const [hemisphere, setHemisphere] = useState('north');
+    // const [hemisphere, setHemisphere] = useState('north');
     const [showRare, setShowRare] = useState(true);
     const [tabValue, setTabValue] = useState(0);
     const [alignment, setAlignment] = useState('list');
     const [loading, setLoading] = useState(false);
     const [selectedSeason, setSelectedSeason] = useState('spring');
     const [valueRange, setValueRange] = useState([0, 15000]);
+    const [hemisphere, setHemisphere] = useState<"" | unknown | undefined>()
 
     const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
@@ -100,19 +100,6 @@ const CritterClockShowcase = () => {
         }, 1500);
     };
 
-
-    const ButtonComponent = () => {
-        const handleButtonClick = async () => {
-            const fishData = await loadFishList();
-            console.log("Fetched Fish Data:", fishData);
-        };
-
-        return (
-            <Button variant="contained" color="primary" onClick={handleButtonClick}>
-                Data Test
-            </Button>
-        );
-    };
 
     // Sample fish data
     const fishData = [
@@ -170,7 +157,6 @@ const CritterClockShowcase = () => {
                 <Typography variant="body1">
                     Find the perfect time to catch fish and bugs in Animal Crossing: New Horizons!
                 </Typography>
-                <ButtonComponent />
             </Paper>
 
             {/* Header with main title */}
