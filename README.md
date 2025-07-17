@@ -1,54 +1,32 @@
-# React + TypeScript + Vite
+# 🐟 CritterClock
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Your Animal Crossing fishing buddy that actually knows when to fish!**
 
-Currently, two official plugins are available:
+Tired of casting your line 50 times just to catch another sea bass? CritterClock is here to help! The app analyzes spawn patterns and competition to tell you exactly when to drop that fishing line for the best chance at catching what you're looking for.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🎯 What I'm Building
 
-## Expanding the ESLint configuration
+- **Smart Timing**: No more random fishing! The app will tell you when that rare fish is most likely to bite.
+- **Less Competition**: Ever notice how you get 20 sea bass but no red snapper? The app figures out when fewer common fish are spawning, maximizing your chance to catch that rare fish.
+- **All Your Favorite Games**: Starting with New Horizons, but there is plans to support more Animal Crossing games eventually.
+- **Reliable Data**: The app use [Nookipedia's](https://nookipedia.com/wiki/Main_Page) API for accurate and up-to-date information.
+## 🚧 Heads Up!
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**I'm still building this thing!** Right now it's design docs and caffeine, but i'm working to make your Animal Crossing life easier. The app is being built with React and Material-UI, with a visual design similar to New Horizons.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### Coming Soon
+- [ ] Analyzing API data to find you the best time for catching a fish (the important part!)
+- [ ] Track what you've donated to Blathers
+- [ ] A digital Critterpedia
+- [ ] Support for older AC games
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ❤️ Credits
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+Special thanks to Katherine Manalo for her amazing [Animal Crossing UI Kit](https://www.figma.com/community/file/1155196388062943961/animal-crossing-ui-kit) that helped shape the design! Check out more of her work at [manaloka.com](https://manaloka.com) or connect with her on [LinkedIn](https://linkedin.com/in/katherine-manalo).
+
+---
+
+
+*CritterClock is made by fans, for fans. We're not affiliated with Nintendo, but we sure do love Tom Nook!*
