@@ -139,7 +139,7 @@ const CritterFinder = () => {
                 </Grid>
             )}
 
-            {/* Results Display */} //TODO: remove when recs implemented
+            {/* Results Display //TODO: remove when recs implemented*/}
             {showResults && results && (
                 <Paper elevation={3} sx={{ mt: 4, p: 3 }}>
                     <Typography variant="h6" gutterBottom>
