@@ -1,18 +1,20 @@
-import { useState } from "react";
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import { FishIcon, BugIcon, SeaIcon} from "../assets/icons.tsx";
 
-const HemisphereSelect = () => {
-    const [selectedCritter, setSelectedCritter] = useState('fish');
+interface CritterTypeSelectProps {
+    value: string;
+    onChange: (value: string) => void;
+}
 
+const CritterTypeSelect = ({ value, onChange }: CritterTypeSelectProps) => {
     return(
         <Grid size={{xs: 12, sm:6, md:3}}>
             <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
                 <InputLabel id="critter-type-label">Critter Type</InputLabel>
                 <Select
                     labelId="critter-type-label"
-                    value={selectedCritter}
-                    onChange={(e) => setSelectedCritter(e.target.value)}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
                     label="Critter Type"
                 >
                     <MenuItem value="fish">
@@ -36,4 +38,4 @@ const HemisphereSelect = () => {
     )
 }
 
-export default HemisphereSelect;
+export default CritterTypeSelect;

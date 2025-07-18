@@ -121,6 +121,12 @@ export const acTheme  = createTheme({
     ],
 
     components: {
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true,
+            },
+        },
+
         MuiButton: {
             styleOverrides: {
                 root: {
