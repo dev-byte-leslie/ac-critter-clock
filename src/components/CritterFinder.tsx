@@ -4,7 +4,9 @@ import {
     Grid,
     Typography,
     Button,
-    Paper, CircularProgress
+    Paper,
+    CircularProgress,
+    Switch,
 } from "@mui/material";
 import { loadFishList } from "../services/FishList.ts";
 import HemisphereSelect from "./HemisphereSelect.tsx";
@@ -12,6 +14,7 @@ import MonthSelect from "./MonthSelect.tsx";
 import CritterTypeSelect from "./CritterTypeSelect.tsx";
 import CritterSelect from "./CritterSelect.tsx";
 import {Fish} from "../types/Fish.ts";
+import {filterFish} from "../utility/filterFish.ts";
 
 const CritterFinder = () => {
     type ResultsType = {
@@ -26,6 +29,7 @@ const CritterFinder = () => {
     const [selectedCritterType, setSelectedCritterType] = useState('');
     const [hemisphere, setHemisphere] = useState('north');
     const [month, setMonth] = useState(new Date().getMonth());
+    const [raining, setRaining] = useState(false);
 
     const[critter, setCritter] = useState<Fish | null>(null); //TODO: generic critter type
 
@@ -81,6 +85,9 @@ const CritterFinder = () => {
         });
 
         setShowResults(true);
+        if (critter) {
+            filterFish(critterList, critter, raining, hemisphere, month);
+        }
     };
 
     return (
@@ -103,6 +110,13 @@ const CritterFinder = () => {
                     onChange={setSelectedCritterType}
                 />
             </Grid>
+
+            <Switch
+                checked={raining}
+                onChange={(event) => setRaining(event.target.checked)}
+                inputProps={{ 'aria-label': 'controlled' }}
+            />
+            raining
 
             {/* Conditional Critter Select */}
             {selectedCritterType && hemisphere && month !== undefined && (
