@@ -1,4 +1,4 @@
-import {FormControl, InputLabel, Select, MenuItem, Box, Grid} from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Box, Grid } from '@mui/material';
 
 interface MonthSelectProps {
     value: number;
@@ -23,7 +23,8 @@ const MonthSelect = ({ value, onChange }: MonthSelectProps) => {
                     onChange={(e) => onChange(e.target.value as number)}
                 >
                     {months.map((monthName, index) => (
-                        <MenuItem key={index} value={index}>
+                        //add one to index, since value represents months, and they are not 0 based.
+                        <MenuItem key={index} value={index + 1}>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                 <Box sx={{ ml: 1 }}>{monthName}</Box>
                             </Box>

@@ -8,7 +8,6 @@ import {
     RIVER_CLIFFTOP_LOCATION,
     POND_LOCATION,
     HEMISPHERE_NORTH,
-    HEMISPHERE_SOUTH
 } from "./constants";
 
 export function filterFish(
@@ -18,10 +17,11 @@ export function filterFish(
     selectedHemisphere: string,
     selectedMonth: number,
 ): Fish[] {
-    const results = filterFishLocation(allFish, selectedFish, isRaining);
-    const result2 = filterFishDate(results, selectedFish, selectedHemisphere, selectedMonth)
-    console.log(result2)
-    return result2;
+    const locationFiltered = filterFishLocation(allFish, selectedFish, isRaining);
+    const monthFiltered = filterFishMonth(locationFiltered, selectedFish, selectedHemisphere, selectedMonth)
+    const timeFiltered = findOptimalTime(monthFiltered, selectedFish)
+    console.log(timeFiltered)
+    return monthFiltered;
 }
 
 /**
@@ -69,43 +69,50 @@ function filterFishLocation(
 /**
  * TODO comment
  */
-function filterFishDate(
+function filterFishMonth (
     filteredFish: Fish[],
     selectedFish: Fish,
     selectedHemisphere: string,
     selectedMonth: number,
 ): Fish[] {
-const monthActual:number = selectedMonth +1;
+
     const selectedFishAvailability : HemisphereAvailability =
         selectedHemisphere == HEMISPHERE_NORTH ? selectedFish.north : selectedFish.south
-    console.log ("hemisphere: " + selectedHemisphere);
-    console.log ("selected month: " + monthActual.toString());
-    console.log(selectedFishAvailability)
 
-    if(!selectedFishAvailability.monthsArray.includes(monthActual)){
-        console.log("creature month mismatch");
-        //todo handle case where selected selected fish does not have availability in the selected month
+    if(!selectedFishAvailability.monthsArray.includes(selectedMonth)){
+        console.error(`${selectedFish.name} is not available during month ${selectedMonth}.`);
+        return filteredFish;
+        //TODO: handle user friendly error by limiting the fish drop down to only fish available during said month?
+        //then possibly remove selectedFish param.
     }
-    // console.log ("selected fish: " + selectedFish.name);
-    // console.log ("hemisphere: " + selectedHemisphere);
+
+
     return filteredFish.filter(fish => {
         const fishAvailability : HemisphereAvailability =
             selectedHemisphere == HEMISPHERE_NORTH ? fish.north : fish.south;
 
-        // console.log("checking " + fish.name)
         if (!fishAvailability.monthsArray.includes(selectedMonth)) {
-            // console.log(fish.name + " not included in month");
             return false;
         }
-        // console.log(fish.name + " IS included in month");
         return true;
     });
 }
 
+/**
+ * TODO comment
+ */
+function findOptimalTime (
+    filteredFish: Fish[],
+    selectedFish: Fish,
+    selectedHemisphere: string,
+    selectedMonth: number,
+): Fish[] {
 
+    return filteredFish.filter(fish => {
 
-
-
-export { filterFishLocation };
-
-
+        if (!fishAvailability.monthsArray.includes(selectedMonth)) {
+            return false;
+        }
+        return true;
+    });
+}
