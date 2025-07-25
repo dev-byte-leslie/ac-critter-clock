@@ -9,6 +9,14 @@ import {
     POND_LOCATION,
     HEMISPHERE_NORTH,
 } from "./constants";
+import {
+    OptimalCatchResult,
+    TimeRange,
+    parseTimeString,
+    getHoursInRanges,
+    countCompetitionAtHour,
+    groupConsecutiveHours
+} from "./parseTimes.ts";
 
 export function filterFish(
     allFish: Fish[],
@@ -16,11 +24,11 @@ export function filterFish(
     isRaining: boolean,
     selectedHemisphere: string,
     selectedMonth: number,
-): Fish[] {
+): Fish[] { //todo pull selected fish, hemisphere and month into an object?
     const locationFiltered = filterFishLocation(allFish, selectedFish, isRaining);
     const monthFiltered = filterFishMonth(locationFiltered, selectedFish, selectedHemisphere, selectedMonth)
-    const timeFiltered = findOptimalTime(monthFiltered, selectedFish)
-    console.log(timeFiltered)
+    const optimalTime = findOptimalCatchTime(monthFiltered, selectedFish, selectedHemisphere, selectedMonth)
+    console.log(optimalTime);
     return monthFiltered;
 }
 
@@ -67,19 +75,19 @@ function filterFishLocation(
 }
 
 /**
- * TODO comment
+ * Filter all Fish by user-selected month
  */
-function filterFishMonth (
+function filterFishMonth(
     filteredFish: Fish[],
     selectedFish: Fish,
     selectedHemisphere: string,
     selectedMonth: number,
 ): Fish[] {
 
-    const selectedFishAvailability : HemisphereAvailability =
+    const selectedFishAvailability: HemisphereAvailability =
         selectedHemisphere == HEMISPHERE_NORTH ? selectedFish.north : selectedFish.south
 
-    if(!selectedFishAvailability.monthsArray.includes(selectedMonth)){
+    if (!selectedFishAvailability.monthsArray.includes(selectedMonth)) {
         console.error(`${selectedFish.name} is not available during month ${selectedMonth}.`);
         return filteredFish;
         //TODO: handle user friendly error by limiting the fish drop down to only fish available during said month?
@@ -88,7 +96,7 @@ function filterFishMonth (
 
 
     return filteredFish.filter(fish => {
-        const fishAvailability : HemisphereAvailability =
+        const fishAvailability: HemisphereAvailability =
             selectedHemisphere == HEMISPHERE_NORTH ? fish.north : fish.south;
 
         if (!fishAvailability.monthsArray.includes(selectedMonth)) {
@@ -99,20 +107,77 @@ function filterFishMonth (
 }
 
 /**
- * TODO comment
+ * Finds the optimal time to catch a fish with minimum competition
  */
-function findOptimalTime (
+function findOptimalCatchTime(
     filteredFish: Fish[],
     selectedFish: Fish,
     selectedHemisphere: string,
-    selectedMonth: number,
-): Fish[] {
+    selectedMonth: number
+): OptimalCatchResult {
+    const selectedFishAvailability: HemisphereAvailability =
+        selectedHemisphere == HEMISPHERE_NORTH ? selectedFish.north : selectedFish.south
+    const selectedTimeString = selectedFishAvailability.timesByMonth[selectedMonth];
 
-    return filteredFish.filter(fish => {
+    // Parse target fish available time ranges
+    const targetTimeRanges = parseTimeString(selectedTimeString);
 
-        if (!fishAvailability.monthsArray.includes(selectedMonth)) {
-            return false;
+    if (targetTimeRanges.length === 0) {
+        throw new Error(`Could not parse time string for target fish: ${selectedTimeString}`);
+    }
+
+    // Get all competitor fish time ranges
+    const competitorTimeRanges: TimeRange[][] = [];
+
+    for (const fish of filteredFish) {
+        // Skip if it's the same fish
+        if (fish.number === selectedFish.number) {
+            continue;
         }
-        return true;
-    });
+
+        const fishAvailability : HemisphereAvailability = //todo pull this out into separate function, used several times
+            selectedHemisphere == HEMISPHERE_NORTH ? fish.north : fish.south
+        const fishTimeString = fishAvailability.timesByMonth[selectedMonth];
+
+        // Skip if competitor fish not available this month
+        if (fishTimeString === "NA") {
+            continue;
+        }
+
+        // Parse competitor time ranges and add to array
+        const fishTimeRanges = parseTimeString(fishTimeString);
+        if (fishTimeRanges.length > 0) {
+            competitorTimeRanges.push(fishTimeRanges);
+        }
+    }
+
+    // Get all hours when target fish is available
+    const targetAvailableHours = getHoursInRanges(targetTimeRanges);
+
+    // Analyze competition for each hour in target fish's availability
+    let minCompetition = Infinity;
+    const optimalHours: number[] = [];
+
+    for (const hour of targetAvailableHours) {
+        const competitionCount = countCompetitionAtHour(hour, competitorTimeRanges);
+
+        if (competitionCount < minCompetition) {
+            minCompetition = competitionCount;
+            optimalHours.length = 0; // Clear array
+            optimalHours.push(hour);
+        } else if (competitionCount === minCompetition) {
+            optimalHours.push(hour);
+        }
+    }
+
+    // Group consecutive optimal hours into time ranges
+    const optimalRanges = groupConsecutiveHours(optimalHours);
+
+    return {
+        minCompetition: minCompetition === Infinity ? 0 : minCompetition,
+        optimalHours,
+        optimalRanges,
+        totalCompetitors: competitorTimeRanges.length,
+        targetAvailableRanges: targetTimeRanges
+    };
 }
