@@ -15,7 +15,8 @@ import {
     parseTimeString,
     getHoursInRanges,
     countCompetitionAtHour,
-    groupConsecutiveHours
+    groupConsecutiveHours,
+    parseTimeTo12,
 } from "./parseTimes.ts";
 
 export function filterFish(
@@ -24,12 +25,14 @@ export function filterFish(
     isRaining: boolean,
     selectedHemisphere: string,
     selectedMonth: number,
-): Fish[] { //todo pull selected fish, hemisphere and month into an object?
+): OptimalCatchResult { //todo pull selected fish, hemisphere and month into an object?
     const locationFiltered = filterFishLocation(allFish, selectedFish, isRaining);
     const monthFiltered = filterFishMonth(locationFiltered, selectedFish, selectedHemisphere, selectedMonth)
     const optimalTime = findOptimalCatchTime(monthFiltered, selectedFish, selectedHemisphere, selectedMonth)
+    const optimalTimeParsed = parseOptimalTime(optimalTime)
+    console.log(optimalTimeParsed);
     console.log(optimalTime);
-    return monthFiltered;
+    return optimalTime;
 }
 
 /**
@@ -135,7 +138,7 @@ function findOptimalCatchTime(
             continue;
         }
 
-        const fishAvailability : HemisphereAvailability = //todo pull this out into separate function, used several times
+        const fishAvailability: HemisphereAvailability = //todo pull this out into separate function, used several times
             selectedHemisphere == HEMISPHERE_NORTH ? fish.north : fish.south
         const fishTimeString = fishAvailability.timesByMonth[selectedMonth];
 
@@ -180,4 +183,27 @@ function findOptimalCatchTime(
         totalCompetitors: competitorTimeRanges.length,
         targetAvailableRanges: targetTimeRanges
     };
+}
+
+
+// Function to parse and display optimal catching times
+function parseOptimalTime(optimalCatchResult: OptimalCatchResult) {
+    const {optimalRanges}: OptimalCatchResult = optimalCatchResult;
+
+    if (!optimalRanges || optimalRanges.length === 0) {
+        return "No optimal times available.";
+    }
+
+    // Handle single range
+    if (optimalRanges.length === 1) {
+        const range = optimalRanges[0];
+        return `Best time to catch the critter: ${parseTimeTo12(range.start)} - ${parseTimeTo12(range.end)}`;
+    }
+
+    // Handle multiple ranges
+    const timeRanges = optimalRanges.map(range =>
+        `${parseTimeTo12(range.start)} - ${parseTimeTo12(range.end)}`
+    );
+
+    return `Best times to catch the critter:\n• ${timeRanges.join('\n• ')}`;
 }

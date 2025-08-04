@@ -31,7 +31,7 @@ const CritterFinder = () => {
     const [month, setMonth] = useState(new Date().getMonth());
     const [raining, setRaining] = useState(false);
 
-    const[critter, setCritter] = useState<Fish | null>(null); //TODO: generic critter type
+    const [critter, setCritter] = useState<Fish | null>(null); //TODO: generic critter type
 
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState<ResultsType>(null);
